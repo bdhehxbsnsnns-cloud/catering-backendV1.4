@@ -10,7 +10,7 @@ app.use(express.json());
 // 1. НАСТРОЙКИ ТЕЛЕГРАМ
 // ==========================================
 const BOT_TOKEN = '8768403997:AAGu0Ns_YsH8R_btcmRFX5XpE134PyTZzDA'; 
-const CHAT_ID = '5128572641'; 
+const CHAT_ID = '987454198'; 
 
 // ==========================================
 // 2. ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ MONGODB
@@ -160,3 +160,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Сервер запущен на порту: ${PORT}`);
 });
+
