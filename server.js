@@ -24,9 +24,17 @@ mongoose.connect(MONGODB_URI)
 // ==========================================
 // 3. СТРУКТУРА ТОВАРА В БАЗЕ (Схема)
 // ==========================================
+// Добавляем новую схему для Разделов
+const categorySchema = new mongoose.Schema({
+  name: String
+});
+const Category = mongoose.model('Category', categorySchema);
+
+// Обновляем схему Товара (добавляем массив categories)
 const menuItemSchema = new mongoose.Schema({
   name: String,
-  category: String,
+  category: String, // оставили для совместимости со старыми товарами
+  categories: [String], // НОВОЕ ПОЛЕ: массив ID разделов
   price: Number,
   desc: String,
   image: String
@@ -37,6 +45,39 @@ const MenuItem = mongoose.model('MenuItem', menuItemSchema);
 // 4. НОВЫЕ ПУТИ ДЛЯ АДМИНКИ (API)
 // ==========================================
 
+// --- API ДЛЯ РАЗДЕЛОВ ---
+// Получить все разделы
+app.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка БД' });
+  }
+});
+
+// Создать новый раздел
+app.post('/api/categories', async (req, res) => {
+  try {
+    const newCategory = new Category(req.body);
+    await newCategory.save();
+    res.json({ success: true, category: newCategory });
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка БД' });
+  }
+});
+
+// Удалить раздел
+app.delete('/api/categories/:id', async (req, res) => {
+  try {
+    await Category.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка БД' });
+  }
+});
+
+// --- API ДЛЯ ТОВАРОВ ---
 // Отдать все товары (для витрины и админки)
 app.get('/api/menu', async (req, res) => {
   try {
